@@ -23,6 +23,11 @@ body{
     color: #555;
   }
 
+  .noMatch {
+    text-align: left;
+    padding: 40px, 0,0,0;
+  }
+
   .page-header .student-search{
     float: right;
   }
