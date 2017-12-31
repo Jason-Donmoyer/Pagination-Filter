@@ -6,6 +6,10 @@ const studentsPerPage = 10;
 // variables to create page buttons
 const divButton = document.querySelector('.pagination');
 const newPageButton = divButton.querySelector('ul');
+// variables to be used to create the search bar
+const searchButton = document.querySelector('.student-search');
+const match = document.querySelector('.match');
+const resultsOfSearch = [];
 
 // function to get the number of pages required
 function numberOfPages() {
@@ -14,7 +18,7 @@ function numberOfPages() {
 }
 // function to load the initial page of 10 students
 function loadPage() {
-    for (i = 0; i < studentInfo.length;i += 1) {
+    for (let i = 0; i < studentInfo.length;i += 1) {
        if (i < studentsPerPage) {
         studentInfo[i].style.display = '';
        } else {
@@ -58,19 +62,37 @@ function appendPageLinks() {
     }
 }
 
+//function to display search box
+function searchList() {
+    let input = document.createElement('input');
+    let inputButton = document.createElement('button'); 
+    input.placeholder = 'Please enter a name';
+    inputButton.textContent = 'Find Student';
+    searchButton.appendChild(input);
+    searchButton.appendChild(inputButton);
+    //loops through students for 
+    resultsOfSearch.length = 0;
+    inputButton.addEventListener('click', function() {
+      let searchInput = input.value.toLowerCase();
+      for (let i = 0; i < studentInfo.length; i += 1) {
+        if (studentInfo[i].innerHTML.indexOf(searchInput) > -1) {
+          studentInfo[i].style.display = '';
+        } else {
+          studentInfo[i].style.display = 'none';
+          resultsOfSearch.push(i);
+        }
+      }
+      // display a no results found message if no matches are found
+      if (resultsOfSearch.length === studentInfo.length) {
+        match.innerHTML = '<h1>No matches found</h1>';
+      } else {
+        match.innerHTML = '';
+        let pagButtons = document.querySelector('.pagination');
+        pagButtons.style.display = 'none';
+                 
+      }
+    });
+}
 
-//function searchList() {
-    // Obtain the value of the search input
-    // remove the previous page link section    
-    // Loop over the student list, and for each student…
-// ...obtain the student’s name…
-// ...and the student’s email…
-// ...if the search value is found inside either email or name…
-    		// ...add this student to list of “matched” student
-    // If there’s no “matched” students…
-           // ...display a “no student’s found” message
-    // If over ten students were found…
-           // ...call appendPageLinks with the matched students
-   // Call showPage to show first ten students of matched list
-//}
 loadPage();
+searchList();
