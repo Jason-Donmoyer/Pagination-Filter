@@ -86,11 +86,8 @@ function searchList() {
       if (resultsOfSearch.length === studentInfo.length) {
         alert('No matches found!');
       } else {
-        match.innerHTML = '';
-        let pagButtons = document.querySelector('.pagination');
-        pagButtons.style.display = 'none';
-                 
-      }
+        match.innerHTML = '';      
+      } 
     }); 
 }
 
