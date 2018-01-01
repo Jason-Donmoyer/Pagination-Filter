@@ -84,14 +84,14 @@ function searchList() {
       }
       // display a no results found message if no matches are found
       if (resultsOfSearch.length === studentInfo.length) {
-        match.innerHTML = '<h1>No matches found</h1>';
+        alert('No matches found!');
       } else {
         match.innerHTML = '';
         let pagButtons = document.querySelector('.pagination');
         pagButtons.style.display = 'none';
                  
       }
-    });
+    }); 
 }
 
 loadPage();
