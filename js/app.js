@@ -1,95 +1,59 @@
 
-// variables to seperate the students into a collection
-const studentList = document.querySelector('ul');
-const studentInfo = studentList.children;
+// global variable declarations
+const $studentInfo = $('.student-item'); 
 const studentsPerPage = 10;
-// variables to create page buttons
-const divButton = document.querySelector('.pagination');
-const newPageButton = divButton.querySelector('ul');
-// variables to be used to create the search bar
-const searchButton = document.querySelector('.student-search');
-const match = document.querySelector('.match');
-const resultsOfSearch = [];
+const pages = [];
+const studentPageArray = createPages($studentInfo);
+const pagButtons = '<div class="pagination"><ul></ul></div';
 
-// function to get the number of pages required
-function numberOfPages() {
-  let numberOfPages = Math.ceil(studentInfo.length / studentsPerPage);
-  return numberOfPages;
+// function to create an array of pages with 10 students per page
+function createPages(list) {
+	var studentList = list.slice();
+	while (studentList.length) {
+		pages.push(studentList.splice(0,10));
+	}
+	return pages;
 }
-// function to load the initial page of 10 students
-function loadPage() {
-    for (let i = 0; i < studentInfo.length;i += 1) {
-       if (i < studentsPerPage) {
-        studentInfo[i].style.display = '';
-       } else {
-        studentInfo[i].style.display = 'none';
-       }  
-    }
-   // the appendPageLinks function adds the buttons to the page   
-    appendPageLinks();  
- }
 
-// function to show the page corresponding to the button clicked
- function showNewPage () {
-  newPageButton.addEventListener('click', function(e) {
-    let buttonNum = parseInt(e.target.textContent);
-    // used to test the parseInt method 
-    console.log(buttonNum);
-    let maxPerPage = buttonNum * 10;
-    let minPerPage = maxPerPage - 10;
-    for (let i = 0; i < studentInfo.length; i++) {
-        if (i >= minPerPage && i < maxPerPage) {
-            studentInfo[i].style.display = '';
-        }  else {
-            studentInfo[i].style.display = 'none';
+//function to get number of pages
+function numberOfPages(list) {
+	const numberOfPages = Math.ceil(list.length / studentsPerPage);
+	return numberOfPages;
+}
+
+// function to filter the page displayed
+function showPage(pageNumber, list) {
+    // hide the student list
+    $studentInfo.hide();
+    //loop through the array of pages
+    $.each(list, function(index, page){
+        if (pageNumber === index) {
+            $.each(page, function(i, listIndex) {
+                // animation when page is displayed
+                $(listIndex).show('slow');
+            });
         }
-      }     
-  });
- }
-
-// function to create the page buttons
-function appendPageLinks() {
-    for (let i = 1; i <= numberOfPages(); i += 1) {
-      let newPage = document.createElement('li');
-      let newPageLink = document.createElement('a');
-      newPageLink.className = 'active';
-      newPageLink.href = '#';
-      newPageLink.textContent = i;
-      newPageButton.appendChild(newPage);
-      newPage.appendChild(newPageLink);
-      // add the functionality to the buttons
-      showNewPage();
+    });
     }
+    
+//function to create page buttons
+function appendPageLinks(list) {
+    $('.page').append(pagButtons);
+    let numPages = numberOfPages($studentInfo);
+    for (let i = 1; i <= numPages; i += 1) {
+        const pageButtons = '<li><a href ="#">' + i + '</a></li>';
+        $('.pagination ul').append(pageButtons);
+    } 
+    $('.pagination ul li a').first().addClass('active');
+    $('.pagination ul li a').on('click', function(e) {
+        let pageClick = parseInt($(this)[0].text) -1;
+        showPage(pageClick, list);
+        $('.pagination ul li a').removeClass();
+        $(this).addClass('active');
+        e.preventDefault();
+    });
 }
 
-//function to display search box
-function searchList() {
-    let input = document.createElement('input');
-    let inputButton = document.createElement('button'); 
-    input.placeholder = 'Please enter a name';
-    inputButton.textContent = 'Find Student';
-    searchButton.appendChild(input);
-    searchButton.appendChild(inputButton);
-    //loops through students for 
-    resultsOfSearch.length = 0;
-    inputButton.addEventListener('click', function() {
-      let searchInput = input.value.toLowerCase();
-      for (let i = 0; i < studentInfo.length; i += 1) {
-        if (studentInfo[i].innerHTML.indexOf(searchInput) > -1) {
-          studentInfo[i].style.display = '';
-        } else {
-          studentInfo[i].style.display = 'none';
-          resultsOfSearch.push(i);
-        }
-      }
-      // display a no results found message if no matches are found
-      if (resultsOfSearch.length === studentInfo.length) {
-        alert('No matches found!');
-      } else {
-        match.innerHTML = '';      
-      } 
-    }); 
-}
-
-loadPage();
-searchList();
+// initialize functions
+appendPageLinks(studentPageArray);
+showPage(0, studentPageArray);
